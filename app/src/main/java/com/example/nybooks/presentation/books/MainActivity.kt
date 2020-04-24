@@ -3,11 +3,11 @@ package com.example.nybooks.presentation.books
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nybooks.R
-import com.example.nybooks.data.model.Book
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -19,14 +19,13 @@ class MainActivity : AppCompatActivity() {
         toolbarMain.title = getString(R.string.books_title)
         setSupportActionBar(toolbarMain)
 
+        val viewModel: BooksViewModel = ViewModelProvider(this).get(BooksViewModel::class.java)
 
-
-        val viewModel: BooksViewModel = ViewModelProviders.of(this).get(BooksViewModel::class.java)
-
-        viewModel.booksLivrData.observe(this, Observer {
+        viewModel.booksLiveData.observe(this, Observer {
             it?.let { books ->
                 with(recyclerBooks) {
-                    layoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.VERTICAL, false)
+                    layoutManager =
+                        LinearLayoutManager(this@MainActivity, RecyclerView.VERTICAL, false)
                     setHasFixedSize(true)
                     adapter = BooksAdapter(books)
                 }
@@ -34,7 +33,4 @@ class MainActivity : AppCompatActivity() {
         })
         viewModel.getBooks()
     }
-
-
-
 }
