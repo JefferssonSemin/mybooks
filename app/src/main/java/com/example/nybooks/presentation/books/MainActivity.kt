@@ -2,6 +2,8 @@ package com.example.nybooks.presentation.books
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nybooks.R
@@ -17,18 +19,22 @@ class MainActivity : AppCompatActivity() {
         toolbarMain.title = getString(R.string.books_title)
         setSupportActionBar(toolbarMain)
 
-        with(recyclerBooks){
-            layoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.VERTICAL, false )
-            setHasFixedSize(true)
-            adapter = BooksAdapter(getBooks())
-        }
+
+
+        val viewModel: BooksViewModel = ViewModelProviders.of(this).get(BooksViewModel::class.java)
+
+        viewModel.booksLivrData.observe(this, Observer {
+            it?.let { books ->
+                with(recyclerBooks) {
+                    layoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.VERTICAL, false)
+                    setHasFixedSize(true)
+                    adapter = BooksAdapter(books)
+                }
+            }
+        })
+        viewModel.getBooks()
     }
 
-    fun getBooks(): List<Book>{
-        return listOf(
-            Book("O poder do hábito", "Gary taubes")
 
-        )
-    }
 
 }
